@@ -6,18 +6,23 @@ set ic
 set smartcase
 set hls
 set number
+set hidden
+set switchbuf=useopen
+set completeopt=menuone,noinsert,noselect
 
 set wildmenu
+
+set foldmethod=indent
+set nofoldenable
+
+"TODO bad default
+set path+=**,./
 
 "Set wd to the file directory
 "set autochdir
 
-"For airline
-"set laststatus=2 
-"let g:airline_powerline_fonts = 1
-
-filetype plugin indent on
-syntax on
+"filetype plugin indent on
+"syntax on
 
 nnoremap <Space> <Nop>
 let mapleader = "\<Space>"
@@ -26,16 +31,16 @@ let maplocalleader = "\\"
 "fzf
 set rtp+=~/.fzf
 
+packadd termdebug
+
 "Plugins
 call plug#begin('~/.vim/bundle')
 
 "Visual 
 "Colors
-Plug 'https://github.com/altercation/vim-colors-solarized.git'
 Plug 'jacoborus/tender.vim'
-Plug 'freeo/vim-kalisi'
-Plug 'sonph/onehalf',{'rtp': 'vim/'}
 Plug 'morhetz/gruvbox'
+Plug 'https://gitlab.com/protesilaos/tempus-themes-vim.git'
 "Airline
 "Plug 'vim-airline/vim-airline'
 "Plug 'vim-airline/vim-airline-themes'
@@ -49,10 +54,13 @@ Plug 'neomake/neomake'
 "Python
 Plug 'davidhalter/jedi-vim', {'for':'python'} 
 "Plug 'numirias/semshi'
+"
+"C++
+"Plug 'jeaye/color_coded'
+Plug 'octol/vim-cpp-enhanced-highlight'
 
 "Tmux
 Plug 'jpalardy/vim-slime'
-"Plug 'benmills/vimux'
 
 "general tools
 Plug 'tpope/vim-surround'
@@ -76,13 +84,15 @@ call plug#end()
 let g:vimtex_quickfix_mode=0
 let g:vimtex_view_method='zathura'
 
-"colorscheme onehalfdark
 set background=dark
 "colorscheme kalisi
-let g:gruvbox_italic=1
-let g:gruvbox_guisp_fallback = "bg"
-colorscheme gruvbox
-"let g_airline_theme='papercolor'
+"let g:gruvbox_italic=1
+"let g:gruvbox_guisp_fallback = "bg"
+"colorscheme wombat256mod
+colorscheme tempus_warp
+set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 "Python configuration
 let g:slime_target = "tmux"
@@ -94,8 +104,13 @@ let g:neomake_python_enabled_makers = ['pylint']
 
 let g:jedi#usages_command = "<leader>u"
 
-"C++, avoid auto/omnicomplete searching through includes
-set complete=.,w,b,u,t
+"C++,
+"avoid complete searching through includes
+autocmd Filetype cpp set complete=.,w,b,u,t
+"pair angle brackets for templates
+autocmd Filetype cpp set matchpairs+=<:>
+"man pages
+autocmd Filetype cpp set keywordprg=cppman
 
 "fixes different color on text and nontext background
 set t_ut=
@@ -128,6 +143,7 @@ command! -nargs=* TmuxRunCommand :call TmuxRunCommand(<f-args>)
 "Programming maps
 map <leader>m :Neomake!<CR>
 map <leader>l :Neomake<CR>
-map <leader>r :TmuxRunCommand
+map <leader>r :TmuxRunCommand<CR>
 map <leader>n :lnext<CR>
 map <leader>p :lprevious<CR>
+map <leader>g :execute "lvimgrep! /" . expand("<cword>") . "/ **"<CR>
